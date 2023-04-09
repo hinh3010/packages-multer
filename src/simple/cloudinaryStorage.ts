@@ -3,20 +3,30 @@ import { v2 } from 'cloudinary'
 import path from 'path'
 import { toSlug } from '../slug'
 
-/**
- * Configures Cloudinary credentials for v2 of the API
- */
-v2.config({
-  cloud_name: 'dqmv3pllu',
-  api_key: '947637492891922',
-  api_secret: 'AoGygICiHJ8yvjJ10TbqvQmSS-E'
-})
+export interface CloudinaryStorageOptions {
+  destination: string
+  allowedFormats?: string[]
+  cloudinaryConfig?: {
+    cloud_name: string
+    api_key: string
+    api_secret: string
+  }
+}
 
 /**
  * Creates a new Cloudinary storage instance with the given options
- * @param {string} destination - the destination folder for uploaded files
+ * @param {CloudinaryStorageOptions} options - the options object for Cloudinary storage
  */
-export const cloudinaryStorage = (destination: string, allowedFormats?: string[]) => {
+export const getCloudinaryStorage = (options: CloudinaryStorageOptions) => {
+  const { destination, allowedFormats, cloudinaryConfig } = options
+
+  // Configure Cloudinary credentials
+  if (!cloudinaryConfig) {
+    throw new Error('Cloudinary credentials must be provided in cloudinaryConfig')
+  }
+
+  v2.config(cloudinaryConfig)
+
   const storageOptions = {
     cloudinary: v2,
     params: {

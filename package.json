@@ -1,5 +1,5 @@
 {
-  "name": "@hellocacbantre/nulter",
+  "name": "@hellocacbantre/multer",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -17,8 +17,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "hinh3010/packages-nulter",
-    "url2": "git@gitlab.com:hellocacbantre/packages/nulter.git"
+    "url": "hinh3010/packages-multer",
+    "url2": "git@gitlab.com:hellocacbantre/packages/multer.git"
   },
   "dependencies": {
     "@google-cloud/storage": "^6.9.5",

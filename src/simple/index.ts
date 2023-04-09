@@ -1,7 +1,6 @@
-import { toSlug } from './../slug/index'
-import multer from 'multer'
+import multer, { type StorageEngine } from 'multer'
 import path from 'path'
-import { cloudinaryStorage } from './cloudinaryStorage'
+import { toSlug } from './../slug/index'
 
 /**
  * The file filter function used by Multer to filter files to be uploaded.
@@ -15,7 +14,7 @@ const fileSizeLimit = 1 * 1024 * 1024 * 1024 // 1GB
 /**
  * The Disk Storage engine used by Multer to upload files to disk.
  */
-const diskStorage = multer.diskStorage({
+export const diskStorage = multer.diskStorage({
   destination: (_req, _file, cb) => {
     cb(null, 'src/uploads')
   },
@@ -31,23 +30,11 @@ const diskStorage = multer.diskStorage({
 /**
  * The Memory Storage engine used by Multer to upload files to memory.
  */
-const memoryStorage = multer.memoryStorage()
+export const memoryStorage = multer.memoryStorage()
 
-export const multerDisk = multer({
-  storage: diskStorage,
-  limits: { fileSize: fileSizeLimit },
-  fileFilter
-})
-
-export const multerMemory = multer({
-  storage: memoryStorage,
-  limits: { fileSize: fileSizeLimit },
-  fileFilter
-})
-
-export const multerCloudinary = (destination: string, allowedFormats?: string[]) =>
+export const multerUpload = (storage: StorageEngine) =>
   multer({
-    storage: cloudinaryStorage(destination, allowedFormats),
+    storage,
     fileFilter,
     limits: { fileSize: fileSizeLimit }
   })

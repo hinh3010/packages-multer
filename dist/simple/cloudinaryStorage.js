@@ -3,32 +3,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cloudinaryStorage = void 0;
+exports.getCloudinaryStorage = void 0;
 const multer_storage_cloudinary_1 = require("multer-storage-cloudinary");
 const cloudinary_1 = require("cloudinary");
 const path_1 = __importDefault(require("path"));
-/**
- * Configures Cloudinary credentials for v2 of the API
- */
-cloudinary_1.v2.config({
-    cloud_name: 'dqmv3pllu',
-    api_key: '947637492891922',
-    api_secret: 'AoGygICiHJ8yvjJ10TbqvQmSS-E'
-});
+const slug_1 = require("../slug");
 /**
  * Creates a new Cloudinary storage instance with the given options
- * @param {string} destination - the destination folder for uploaded files
+ * @param {CloudinaryStorageOptions} options - the options object for Cloudinary storage
  */
-const cloudinaryStorage = (destination, allowedFormats) => {
+const getCloudinaryStorage = (options) => {
+    const { destination, allowedFormats, cloudinaryConfig } = options;
+    // Configure Cloudinary credentials
+    if (!cloudinaryConfig) {
+        throw new Error('Cloudinary credentials must be provided in cloudinaryConfig');
+    }
+    cloudinary_1.v2.config(cloudinaryConfig);
     const storageOptions = {
         cloudinary: cloudinary_1.v2,
         params: {
             folder: () => `hellocacbantre/${destination}`,
             format: (_req, file) => path_1.default.extname(file.originalname).slice(1),
             public_id: (req, file) => {
+                const originalnameSlug = (0, slug_1.toSlug)(file.originalname);
                 const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-                const fileExt = path_1.default.extname(file.originalname);
-                const fileName = `${uniqueSuffix}-${file.fieldname}${fileExt}`;
+                const fileName = `${originalnameSlug}-${uniqueSuffix}-${file.fieldname}`;
                 return fileName;
             },
             transformation: [
@@ -71,4 +70,4 @@ const cloudinaryStorage = (destination, allowedFormats) => {
     };
     return new multer_storage_cloudinary_1.CloudinaryStorage(storageOptions);
 };
-exports.cloudinaryStorage = cloudinaryStorage;
+exports.getCloudinaryStorage = getCloudinaryStorage;
