@@ -30,7 +30,7 @@ export const getCloudinaryStorage = (options: CloudinaryStorageOptions) => {
   const storageOptions = {
     cloudinary: v2,
     params: {
-      folder: () => `hellocacbantre/${destination}`,
+      folder: () => destination,
       format: (_req: any, file: any) => path.extname(file.originalname).slice(1),
       public_id: (req: any, file: { originalname: string; fieldname: string }) => {
         const originalnameSlug = toSlug(file.originalname)
